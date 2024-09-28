@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Agriculture - Resources</title>
+    <style>
+        body {
+            margin: 0; 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #003366, #66ccff);
+            color: white;
+        }
+        header {
+            background-color: rgba(0, 51, 102, 0.8);
+            padding: 10px 0;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        section {
+            padding: 50px 0;
+            text-align: center;
+        }
+        footer {
+            background-color: rgba(0, 51, 102, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">NASA Agriculture</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="research.html">Research</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="section">
+        <h2>Resources</h2>
+        <p>Access a variety of resources related to agriculture, including research papers, datasets, and tools to assist farmers and researchers in optimizing agricultural practices.</p>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 NASA Agriculture. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            header.classList.toggle('sticky', window.scrollY > 0);
+        });
+    </script>
+</body>
+</html>
