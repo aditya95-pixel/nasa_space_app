@@ -6,8 +6,10 @@ import sklearn
 import numpy as np
 import sqlite3
 from decouple import config
-dtr=pickle.load(open('dtr.pkl','rb'))
-preprocessor=pickle.load(open('preprocessor.pkl','rb'))
+dtr=pickle.load(open('./Models/cropyield/dtr.pkl','rb'))
+preprocessor=pickle.load(open('./Models/cropyield/preprocessor.pkl','rb'))
+model1=pickle.load(open('./Models/croprecommender/model.pkl','rb'))
+ms = pickle.load(open('./Models/croprecommender/minmaxscaler.pkl','rb'))
 app = Flask(__name__)
 app.secret_key = config("app.secret_key")
 def init_sqlite_db():
@@ -72,8 +74,8 @@ def register():
 @app.route('/cropyield')
 def cropyield():
     return render_template('cropyield.html')
-@app.route("/predict",methods=['POST'])
-def predict():
+@app.route("/predict_yield",methods=['POST'])
+def predict_yield():
     if request.method == 'POST':
         Year = request.form['Year']
         average_rain_fall_mm_per_year = request.form['average_rain_fall_mm_per_year']
@@ -84,7 +86,38 @@ def predict():
         features = np.array([[Year,average_rain_fall_mm_per_year,pesticides_tonnes,avg_temp,Area,Item]],dtype=object)
         transformed_features = preprocessor.transform(features)
         prediction = dtr.predict(transformed_features).reshape(1,-1)
-        return render_template('cropyield.html',prediction = prediction)
+        return render_template('cropyield.html',prediction = prediction[0][0])
+@app.route('/croppredict')
+def croppredict():
+    return render_template("croppredict.html")
+
+@app.route("/predict_crop",methods=['POST'])
+def predict_crop():
+    N = request.form['Nitrogen']
+    P = request.form['Phosporus']
+    K = request.form['Potassium']
+    temp = request.form['Temperature']
+    humidity = request.form['Humidity']
+    ph = request.form['Ph']
+    rainfall = request.form['Rainfall']
+
+    feature_list = [N, P, K, temp, humidity, ph, rainfall]
+    single_pred = np.array(feature_list).reshape(1, -1)
+
+    scaled_features = ms.transform(single_pred)
+    prediction = model1.predict(scaled_features)
+
+    crop_dict = {1: "Rice", 2: "Maize", 3: "Jute", 4: "Cotton", 5: "Coconut", 6: "Papaya", 7: "Orange",
+                 8: "Apple", 9: "Muskmelon", 10: "Watermelon", 11: "Grapes", 12: "Mango", 13: "Banana",
+                 14: "Pomegranate", 15: "Lentil", 16: "Blackgram", 17: "Mungbean", 18: "Mothbeans",
+                 19: "Pigeonpeas", 20: "Kidneybeans", 21: "Chickpea", 22: "Coffee"}
+
+    if prediction[0][0] in crop_dict:
+        crop = crop_dict[prediction[0][0]]
+        result = "{} is the best crop to be cultivated right there".format(crop)
+    else:
+        result = "Sorry, we could not determine the best crop to be cultivated with the provided data."
+    return render_template('croppredict.html',result = result)
 @app.route('/weather')
 def weather():
     return render_template('weather.html')
@@ -100,6 +133,17 @@ def resources():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+@app.route('/learnmore')
+def learnmore():
+    return render_template('learnmore.html')
+@app.route('/soilWater')
+def soilWater():
+    return render_template('soilWater.html')
+@app.route('/cropMonitoring')
+def cropMonitoring():
+    return render_template('cropMonitoring.html')
+def soilWater():
+    return render_template('soilWater.html')
 @app.route('/logout')
 def logout():
     session.pop('username', None)
