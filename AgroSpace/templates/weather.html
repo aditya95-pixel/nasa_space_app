@@ -145,7 +145,6 @@
 
         <!-- 5-Day Forecast -->
         <div class="forecast-container">
-            <h3>5-Day Forecast</h3>
             <div id="forecast"></div>
         </div>
 
@@ -177,14 +176,16 @@
             .then(response => response.json())
             .then(json => {
                 if (json.cod == '404') {
-                    cityHide.textContent = city;
-                    container.style.height = '400px';
+                    cityHide.textContent = '';
+                    container.style.height = '1200px';
                     weatherBox.classList.remove('active');
                     weatherDetails.classList.remove('active');
                     error404.classList.add('active');
+                    forecastContainer.innerHTML = ""; 
                     return;
                 }
-
+                
+                
                 const image = document.querySelector('.weather-box img');
                 const temperature = document.querySelector('.weather-box .temperature');
                 const description = document.querySelector('.weather-box .description');
@@ -226,7 +227,7 @@
                 fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${APIKey}`)
                 .then(response => response.json())
                 .then(json => {
-                    forecastContainer.innerHTML = ""; // Clear previous forecast
+                    forecastContainer.innerHTML="5-Day Weather Forecast"; // Clear previous forecast
                     const forecastList = json.list.filter((item) => item.dt_txt.includes("12:00:00")); // Get only midday forecasts
 
                     forecastList.forEach(day => {
