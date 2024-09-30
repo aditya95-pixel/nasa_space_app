@@ -1,6 +1,7 @@
 # load packages==============================================================
 from flask import Flask, render_template, request, redirect, url_for, session, flash,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from transformers import pipeline
 import pickle
 import sklearn
 import numpy as np
@@ -9,7 +10,7 @@ from decouple import config
 dtr=pickle.load(open('./Models/cropyield/dtr.pkl','rb'))
 preprocessor=pickle.load(open('./Models/cropyield/preprocessor.pkl','rb'))
 model1=pickle.load(open('./Models/croprecommender/model.pkl','rb'))
-ms = pickle.load(open('./Models/croprecommender/minmaxscaler.pkl','rb'))
+sc1 = pickle.load(open('./Models/croprecommender/standardscaler.pkl','rb'))
 app = Flask(__name__)
 app.secret_key = config("app.secret_key")
 def init_sqlite_db():
@@ -104,7 +105,7 @@ def predict_crop():
     feature_list = [N, P, K, temp, humidity, ph, rainfall]
     single_pred = np.array(feature_list).reshape(1, -1)
 
-    scaled_features = ms.transform(single_pred)
+    scaled_features = sc1.transform(single_pred)
     prediction = model1.predict(scaled_features)
 
     crop_dict = {1: "Rice", 2: "Maize", 3: "Jute", 4: "Cotton", 5: "Coconut", 6: "Papaya", 7: "Orange",
@@ -149,5 +150,51 @@ def logout():
     session.pop('username', None)
     flash("You have been logged out.")
     return redirect(url_for('login'))
+# Define a variable to store the model pipeline globally
+fill_mask = None
+
+# Function to load the model if it's not already loaded
+def load_model():
+    global fill_mask
+    if fill_mask is None:
+        fill_mask = pipeline(
+            "fill-mask",
+            model="recobo/agriculture-bert-uncased",
+            tokenizer="recobo/agriculture-bert-uncased"
+        )
+        print("Model loaded!")
+
+# Function to generate a response using the model
+def generate_response(user_input):
+    if "[MASK]" not in user_input:
+        return "Error: The input must contain a [MASK] token for prediction."
+    
+    # Call load_model to ensure the model is loaded
+    load_model()
+
+    results = fill_mask(user_input)
+    top_prediction = results[0]['sequence']
+    
+    return top_prediction
+
+# Route to serve the HTML page
+@app.route('/querybot')
+def querybot():
+    return render_template('querybot.html')
+
+# API endpoint for the chatbot
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_message = request.json.get('message')
+    
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+    
+    # Get the bot response
+    bot_response = generate_response(user_message)
+    
+    return jsonify({"response": bot_response})
+
 if __name__ == '__main__':
+    load_model()
     app.run(debug=True)
