@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction</title>
+</head>
+<body>
+    <h1>Plant Disease Prediction</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <label for="file">Upload an Image:</label>
+        <input type="file" name="file" id="file" required>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+    <h2>Predicted Disease: {{ prediction }}</h2>
+    <p>Disease Info: {{ info }}</p>
+    {% endif %}
+</body>
+</html>
