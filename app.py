@@ -166,7 +166,7 @@ def logout():
     flash("You have been logged out.")
     return redirect(url_for('login'))
 
-#Querybot
+#find me
 # Define a variable to store the model pipeline globally
 fill_mask = None
 
@@ -299,6 +299,8 @@ def disease_predict():
 # Ensure your uploads folder exists
 if not os.path.exists('./uploads'):
     os.makedirs('./uploads')
+
+
 
 if __name__ == '__main__':
     load_model()
