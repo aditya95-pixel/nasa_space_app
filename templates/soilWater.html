@@ -4,35 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Environmental Predictor</title>
+    <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+        body {
+            margin: 0;
+            padding: 52px 20px;
+            background-image: url('../static/images/soil-data-2.jpg'); /* Replace with your actual background image */
+            background-size: cover;
+            background-position: center;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color:white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1); /* Increase opacity for better visibility */
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 800px; /* Increased width */
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        label {
+            flex: 1;
+            font-size: 1.1rem;
+            margin-right: 5px;
+            text-align: center;
+            color:white;
+        }
+
+        input {
+            flex: 2;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-left:0px;
+        }
+
+        input::placeholder {
+            color: #888;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            label {
+                text-align: left;
+                margin-bottom: 5px;
+            }
+
+            input {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Environmental Data Prediction</h1>
-    <form action="/predict" method="POST">
-        <label for="ttime">Timestamp:</label>
-        <input type="text" id="ttime" name="ttime" placeholder="Enter timestamp"><br><br>
+    <div class="container">
+        <h1>Environmental Data Prediction</h1>
+        <form action="/predict" method="POST">
+            <div class="form-group">
+                <label for="ttime">Timestamp:</label>
+                <input type="text" id="ttime" name="ttime" placeholder="Enter timestamp">
+            </div>
 
-        <label for="pm1">PM1:</label>
-        <input type="text" id="pm1" name="pm1" placeholder="Enter PM1 value"><br><br>
+            <div class="form-group">
+                <label for="pm1">PM1:</label>
+                <input type="text" id="pm1" name="pm1" placeholder="Enter PM1 value">
+            </div>
 
-        <label for="pm2">PM2:</label>
-        <input type="text" id="pm2" name="pm2" placeholder="Enter PM2 value"><br><br>
+            <div class="form-group">
+                <label for="pm2">PM2:</label>
+                <input type="text" id="pm2" name="pm2" placeholder="Enter PM2 value">
+            </div>
 
-        <label for="pm3">PM3:</label>
-        <input type="text" id="pm3" name="pm3" placeholder="Enter PM3 value"><br><br>
+            <div class="form-group">
+                <label for="pm3">PM3:</label>
+                <input type="text" id="pm3" name="pm3" placeholder="Enter PM3 value">
+            </div>
 
-        <label for="am">Air Moisture:</label>
-        <input type="text" id="am" name="am" placeholder="Enter Air Moisture value"><br><br>
+            <div class="form-group">
+                <label for="am">Air Moisture:</label>
+                <input type="text" id="am" name="am" placeholder="Enter Air Moisture value">
+            </div>
 
-        <label for="sm">Soil Moisture:</label>
-        <input type="text" id="sm" name="sm" placeholder="Enter Soil Moisture value"><br><br>
+            <div class="form-group">
+                <label for="sm">Soil Moisture:</label>
+                <input type="text" id="sm" name="sm" placeholder="Enter Soil Moisture value">
+            </div>
 
-        <label for="st">Soil Temperature:</label>
-        <input type="text" id="st" name="st" placeholder="Enter Soil Temperature value"><br><br>
+            <div class="form-group">
+                <label for="st">Soil Temperature:</label>
+                <input type="text" id="st" name="st" placeholder="Enter Soil Temperature value">
+            </div>
 
-        <label for="lum">Luminosity:</label>
-        <input type="text" id="lum" name="lum" placeholder="Enter Luminosity value"><br><br>
+            <div class="form-group">
+                <label for="lum">Luminosity:</label>
+                <input type="text" id="lum" name="lum" placeholder="Enter Luminosity value">
+            </div>
 
-        <button type="submit">Predict</button>
-    </form>
+            <button type="submit">Predict</button>
+        </form>
+    </div>
 </body>
 </html>

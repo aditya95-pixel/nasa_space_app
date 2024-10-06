@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from transformers import pipeline
+import pandas as pd
+import joblib
 from keras import models,layers
 from PIL import Image
 import pickle
@@ -152,9 +154,7 @@ def contact():
 @app.route('/learnmore')
 def learnmore():
     return render_template('learnmore.html')
-@app.route('/soilWater')
-def soilWater():
-    return render_template('soilWater.html')
+
 @app.route('/cropMonitoring')
 def cropMonitoring():
     return render_template('cropMonitoring.html')
@@ -300,7 +300,53 @@ def disease_predict():
 if not os.path.exists('./uploads'):
     os.makedirs('./uploads')
 
+# Step 1: Load the saved models (imputer, scaler, and random forest regressor)
+imputer_soil = joblib.load('./Models/soil_moisture/imputer.pkl')
+scaler_soil = joblib.load('./Models/soil_moisture/scaler.pkl')
+regressor_soil = joblib.load('./Models/soil_moisture/random_forest_regressor.pkl')
 
+@app.route('/soilWater')
+def soilWater():
+    # Render the input form page
+    return render_template('soilWater.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Step 2: Get data from form submission
+    # Split the input string into components and convert to integers
+    ttime_input = str(request.form['ttime'])
+    time_components = list(map(int, ttime_input.split(',')))
+
+        # Create a datetime object from the components
+    ttime = pd.to_datetime(f"{time_components[0]}-{time_components[1]}-{time_components[2]} {time_components[3]}:{time_components[4]}:{time_components[5]}")
+    ttime= int(ttime.timestamp())
+    pm1 = float(request.form['pm1'])
+    pm2 = float(request.form['pm2'])
+    pm3 = float(request.form['pm3'])
+    am = float(request.form['am'])
+    sm = float(request.form['sm'])
+    st = float(request.form['st'])
+    lum = float(request.form['lum'])
+
+    # Step 3: Convert inputs into a NumPy array
+    user_input = np.array([[ttime, pm1, pm2, pm3, am, sm, st, lum]])
+
+    # Step 4: Data preprocessing (imputation and scaling)
+    #user_input = imputer_soil.transform(user_input)  # Handle missing values if any
+    user_input = scaler_soil.transform(user_input)   # Scale the data
+
+    # Step 5: Predict using the loaded model
+    prediction = regressor_soil.predict(user_input)
+
+    # Prepare results (assuming prediction for Temperature, Humidity, and Moisture)
+    result = {
+        'Temperature': prediction[0][0],
+        'Humidity': prediction[0][1],
+        'Moisture': prediction[0][2]
+    }
+
+    # Step 6: Render the result page with the predicted output
+    return render_template('result.html', result=result)
 
 if __name__ == '__main__':
     load_model()
