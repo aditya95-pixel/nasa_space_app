@@ -2,7 +2,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from transformers import pipeline
 import pandas as pd
 import joblib
 from keras import models,layers
@@ -166,51 +165,6 @@ def logout():
     flash("You have been logged out.")
     return redirect(url_for('login'))
 
-#find me
-# Define a variable to store the model pipeline globally
-fill_mask = None
-
-# Function to load the model if it's not already loaded
-def load_model():
-    global fill_mask
-    if fill_mask is None:
-        fill_mask = pipeline(
-            "fill-mask",
-            model="recobo/agriculture-bert-uncased",
-            tokenizer="recobo/agriculture-bert-uncased"
-        )
-        print("Model loaded!")
-
-# Function to generate a response using the model
-def generate_response(user_input):
-    if "[MASK]" not in user_input:
-        return "Error: The input must contain a [MASK] token for prediction."
-    
-    # Call load_model to ensure the model is loaded
-    load_model()
-
-    results = fill_mask(user_input)
-    top_prediction = results[0]['sequence']
-    
-    return top_prediction
-
-# Route to serve the HTML page
-@app.route('/querybot')
-def querybot():
-    return render_template('querybot.html')
-
-# API endpoint for the chatbot
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_message = request.json.get('message')
-    
-    if not user_message:
-        return jsonify({"error": "No message provided"}), 400
-    
-    # Get the bot response
-    bot_response = generate_response(user_message)
-    
-    return jsonify({"response": bot_response})
 
 #Disease prediction CNN
 # Custom model architecture definition
@@ -347,7 +301,8 @@ def predict():
 
     # Step 6: Render the result page with the predicted output
     return render_template('result.html', result=result)
-
+@app.route('/satellite')
+def satellite():
+    return render_template('satelliteimage.html')
 if __name__ == '__main__':
-    load_model()
     app.run(debug=True)

@@ -45,9 +45,9 @@ def recognize_speech():
         return "Sorry, the service is unavailable."
 
 # Configure the Streamlit page
-st.set_page_config(page_title="Voice-Enabled RAG Chatbot", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Voice-Enabled Chatbot", page_icon="🤖", layout="centered")
 
-st.title("🤖 AI Chatbot with RAG")
+st.title("🤖 AI Chatbot")
 
 # Initialize or retrieve chat history from session state
 if "messages" not in st.session_state:
