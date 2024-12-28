@@ -26,7 +26,6 @@ def init_sqlite_db():
     print("Table created successfully")
     conn.close()
 init_sqlite_db()
-#home
 @app.route('/')
 def home():
     if 'username' in session:
