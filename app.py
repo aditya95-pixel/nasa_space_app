@@ -32,7 +32,6 @@ def home():
         return render_template('home.html',username=session['username'])
     else:
         return redirect(url_for('login'))
-#login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
