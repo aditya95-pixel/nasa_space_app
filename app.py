@@ -173,11 +173,11 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def load_and_preprocess_image(image_path, target_size=(224, 224)):
-    img = Image.open(image_path).convert('RGB') # Convert to RGB to ensure 3 
+    img = Image.open(image_path).convert('RGB') 
     img = img.resize(target_size)
     img_array = np.array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-    img_array = img_array.astype('float32') / 255.  # Normalize image
+    img_array = np.expand_dims(img_array, axis=0) 
+    img_array = img_array.astype('float32') / 255. 
     return img_array
 
 def predict_image_class(model, image_path, class_indices):
@@ -185,20 +185,17 @@ def predict_image_class(model, image_path, class_indices):
     predictions = model.predict(preprocessed_img)
     predicted_class_index = np.argmax(predictions, axis=1)[0]
     print(class_indices[str(predicted_class_index)])
-    # Since class_indices is a dictionary with index keys as strings, convert it
     predicted_class_name = class_indices.get(str(predicted_class_index), "Unknown Class")
     return predicted_class_name
 
 @app.route('/diseasepredict', methods=['GET', 'POST'])
 def disease_predict():
     if request.method == 'POST':
-        # Check if a file is in the request
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
 
-        # If the user does not select a file, the browser may submit an empty part
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
@@ -206,12 +203,10 @@ def disease_predict():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_path = os.path.join('./uploads', filename)
-            file.save(file_path)  # Save the uploaded image to the server
+            file.save(file_path) 
 
-            # Predict the disease class
             predicted_class_name = predict_image_class(pest_detector_model, file_path, class_indices)
             
-            # Get the corresponding disease information from the JSON file
             disease_info_text = disease_info.get(predicted_class_name, "No information available for this class.")
 
             return render_template('diseasepredict.html', prediction=predicted_class_name, info=disease_info_text)
