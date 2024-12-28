@@ -76,8 +76,6 @@ def register():
             return redirect(url_for('register'))
 
     return render_template('register.html')
-
-#crop yield prediction
 @app.route('/cropyield')
 def cropyield():
     return render_template('cropyield.html')
