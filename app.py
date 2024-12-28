@@ -144,7 +144,7 @@ def logout():
     session.pop('username', None)
     flash("You have been logged out.")
     return redirect(url_for('login'))
-def create_model(input_shape=(224, 224, 3), num_classes=38):  # Update num_classes based on your dataset
+def create_model(input_shape=(224, 224, 3), num_classes=38):
     model = models.Sequential()
     
     model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
@@ -155,29 +155,23 @@ def create_model(input_shape=(224, 224, 3), num_classes=38):  # Update num_class
     
     model.add(layers.Flatten())
     model.add(layers.Dense(256, activation='relu'))
-    model.add(layers.Dense(num_classes, activation='softmax'))  # Update this with actual number of classes
+    model.add(layers.Dense(num_classes, activation='softmax'))
     
     return model
 
-# Load your pest detector model from .keras format
-pest_detector_model = create_model()  # Create the model architecture
-pest_detector_model.load_weights('./Models/pestdetector/plant_disease_prediction_model.h5')  # Load weights
+pest_detector_model = create_model()  
+pest_detector_model.load_weights('./Models/pestdetector/plant_disease_prediction_model.h5')  
 
-# Load the class indices and disease information from JSON files
 with open('./Models/pestdetector/class_indices.json', 'r') as file:
     class_indices = json.load(file)
 
 with open('./Models/pestdetector/disease_info.json', 'r') as file:
     disease_info = json.load(file)
 
-# Allowed extensions for file uploads
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-# Function to check if the file type is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Function to load and preprocess the image
 def load_and_preprocess_image(image_path, target_size=(224, 224)):
     img = Image.open(image_path).convert('RGB') # Convert to RGB to ensure 3 
     img = img.resize(target_size)
@@ -186,7 +180,6 @@ def load_and_preprocess_image(image_path, target_size=(224, 224)):
     img_array = img_array.astype('float32') / 255.  # Normalize image
     return img_array
 
-# Function to predict the class of the image
 def predict_image_class(model, image_path, class_indices):
     preprocessed_img = load_and_preprocess_image(image_path)
     predictions = model.predict(preprocessed_img)
@@ -196,7 +189,6 @@ def predict_image_class(model, image_path, class_indices):
     predicted_class_name = class_indices.get(str(predicted_class_index), "Unknown Class")
     return predicted_class_name
 
-# Route for plant disease prediction page
 @app.route('/diseasepredict', methods=['GET', 'POST'])
 def disease_predict():
     if request.method == 'POST':
