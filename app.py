@@ -121,7 +121,6 @@ def predict_crop():
 @app.route('/weather')
 def weather():
     return render_template('weather.html')
-#pages that need improvement
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -137,20 +136,14 @@ def contact():
 @app.route('/learnmore')
 def learnmore():
     return render_template('learnmore.html')
-
 @app.route('/cropMonitoring')
 def cropMonitoring():
     return render_template('cropMonitoring.html')
-
-#logout
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     flash("You have been logged out.")
     return redirect(url_for('login'))
-
-
-#Disease prediction CNN
 # Custom model architecture definition
 def create_model(input_shape=(224, 224, 3), num_classes=38):  # Update num_classes based on your dataset
     model = models.Sequential()
