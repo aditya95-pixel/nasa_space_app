@@ -144,7 +144,6 @@ def logout():
     session.pop('username', None)
     flash("You have been logged out.")
     return redirect(url_for('login'))
-# Custom model architecture definition
 def create_model(input_shape=(224, 224, 3), num_classes=38):  # Update num_classes based on your dataset
     model = models.Sequential()
     
