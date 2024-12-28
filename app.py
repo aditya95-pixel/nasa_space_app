@@ -92,8 +92,6 @@ def predict_yield():
         transformed_features = preprocessor.transform(features)
         prediction = dtr.predict(transformed_features).reshape(1,-1)
         return render_template('cropyield.html',prediction = prediction[0][0])
-
-#crop prediction
 @app.route('/croppredict')
 def croppredict():
     return render_template("croppredict.html")
